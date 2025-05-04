@@ -839,6 +839,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
 	*len = virtio32_to_cpu(_vq->vdev,
 			vq->split.vring.used->ring[last_used].len);
 
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "%s -> id: %u", (vq)->vq.name, i);
+
 	if (unlikely(i >= vq->split.vring.num)) {
 		BAD_RING(vq, "id %u out of range\n", i);
 		return NULL;
@@ -1754,6 +1757,9 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
 	last_used = packed_last_used(last_used_idx);
 	id = le16_to_cpu(vq->packed.vring.desc[last_used].id);
 	*len = le32_to_cpu(vq->packed.vring.desc[last_used].len);
+
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "%s -> id: %u", (vq)->vq.name, id);
 
 	if (unlikely(id >= vq->packed.vring.num)) {
 		BAD_RING(vq, "id %u out of range\n", id);
