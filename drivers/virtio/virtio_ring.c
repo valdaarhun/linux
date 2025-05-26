@@ -740,6 +740,8 @@ static bool virtqueue_kick_prepare_split(struct virtqueue *_vq)
 					cpu_to_virtio16(_vq->vdev,
 						VRING_USED_F_NO_NOTIFY));
 	}
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "(prepare_split) %s -> needs_kick: %u", (vq)->vq.name, needs_kick);
 	END_USE(vq);
 	return needs_kick;
 }
@@ -1636,6 +1638,8 @@ static bool virtqueue_kick_prepare_packed(struct virtqueue *_vq)
 
 	if (flags != VRING_PACKED_EVENT_FLAG_DESC) {
 		needs_kick = (flags != VRING_PACKED_EVENT_FLAG_DISABLE);
+		if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+			printk(KERN_INFO "(prepare_packed) %s -> needs_kick: %u", (vq)->vq.name, needs_kick);
 		goto out;
 	}
 
@@ -2497,6 +2501,8 @@ bool virtqueue_notify(struct virtqueue *_vq)
 		vq->broken = true;
 		return false;
 	}
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "(notify) %s -> function will return true", (vq)->vq.name);
 	return true;
 }
 EXPORT_SYMBOL_GPL(virtqueue_notify);
