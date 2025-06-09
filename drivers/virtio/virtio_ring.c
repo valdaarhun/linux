@@ -1771,6 +1771,10 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
 	}
 	if (unlikely(!vq->packed.desc_state[id].data)) {
 		BAD_RING(vq, "id %u is not a head!\n", id);
+		if (unlikely(!vq->packed.desc_state[id+1].data)) {
+			BAD_RING(vq, "LOL! id %u is not a head either!\n", (id + 1) % vq->packed.vring.num);
+			return NULL;
+		}
 		return NULL;
 	}
 
