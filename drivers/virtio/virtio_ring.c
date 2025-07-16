@@ -1639,6 +1639,7 @@ static bool virtqueue_kick_prepare_packed(struct virtqueue *_vq)
 	LAST_ADD_TIME_CHECK(vq);
 	LAST_ADD_TIME_INVALID(vq);
 
+	printk(KERN_INFO "Entering prepare_packed: %s", (vq)->vq.name);
 	if (flags != VRING_PACKED_EVENT_FLAG_DESC) {
 		needs_kick = (flags != VRING_PACKED_EVENT_FLAG_DISABLE);
 		if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
@@ -1674,6 +1675,10 @@ static void detach_buf_packed(struct vring_virtqueue *vq,
 	vq->packed.desc_extra[state->last].next = vq->free_head;
 	vq->free_head = id;
 	vq->vq.num_free += state->num;
+
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "%s -> old free_head: %u, new free_head: %u", (vq)->vq.name,
+		       vq->packed.desc_extra[state->last].next, vq->free_head);
 
 	if (unlikely(vq->use_dma_api)) {
 		curr = id;
@@ -1766,7 +1771,7 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
 	*len = le32_to_cpu(vq->packed.vring.desc[last_used].len);
 
 	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
-		printk(KERN_INFO "%s -> id: %u", (vq)->vq.name, id);
+		printk(KERN_INFO "%s -> id: %u, idx: %u", (vq)->vq.name, id, last_used);
 
 	if (unlikely(id >= vq->packed.vring.num)) {
 		BAD_RING(vq, "id %u out of range\n", id);
@@ -1786,6 +1791,10 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
 	detach_buf_packed(vq, id, ctx);
 
 	last_used += vq->packed.desc_state[id].num;
+
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "(after get_buf processed) %s -> id: %u, idx: %u", (vq)->vq.name, id, last_used);
+
 	if (unlikely(last_used >= vq->packed.vring.num)) {
 		last_used -= vq->packed.vring.num;
 		used_wrap_counter ^= 1;
