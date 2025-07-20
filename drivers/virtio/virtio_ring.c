@@ -520,7 +520,7 @@ static inline unsigned int virtqueue_add_desc_split(struct virtqueue *vq,
 	extra[i].flags = flags;
 
 	next = extra[i].next;
-	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o') {
+	if (vq->name[0] == 'i' || vq->name[0] == 'o') {
 		printk(KERN_INFO "(add_split) %s -> idx: %u", vq->name, i);
 		printk(KERN_INFO "(add_split) %s -> flags: %u", vq->name, desc[i].flags);
 		printk(KERN_INFO "(add_split) %s -> len: %u", vq->name, desc[i].len);
