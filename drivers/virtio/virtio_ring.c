@@ -520,7 +520,11 @@ static inline unsigned int virtqueue_add_desc_split(struct virtqueue *vq,
 	extra[i].flags = flags;
 
 	next = extra[i].next;
-
+	printk(KERN_INFO "(add_split) %s -> idx: %u", vq->name, i);
+	printk(KERN_INFO "(add_split) %s -> id: %u", vq->name, desc[i].id);
+	printk(KERN_INFO "(add_split) %s -> len: %u", vq->name, desc[i].len);
+	printk(KERN_INFO "(add_split) %s -> addr: %llu", vq->name, desc[i].addr);
+	printk(KERN_INFO "(add_split) %s -> next id: %u", vq->name, next);
 	desc[i].next = cpu_to_virtio16(vq->vdev, next);
 
 	return next;
@@ -770,6 +774,9 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
 	vring_unmap_one_split(vq, &extra[i]);
 	vq->split.desc_extra[i].next = vq->free_head;
 	vq->free_head = head;
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "%s -> old free_head: %u, new free_head: %u", (vq)->vq.name,
+		       vq->split.desc_extra[i].next, vq->free_head);
 
 	/* Plus final descriptor */
 	vq->vq.num_free++;
@@ -841,8 +848,8 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
 	*len = virtio32_to_cpu(_vq->vdev,
 			vq->split.vring.used->ring[last_used].len);
 
-	// if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
-	// 	printk(KERN_INFO "%s -> id: %u", (vq)->vq.name, i);
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+		printk(KERN_INFO "%s -> id: %u", (vq)->vq.name, i);
 
 	if (unlikely(i >= vq->split.vring.num)) {
 		BAD_RING(vq, "id %u out of range\n", i);
@@ -1546,7 +1553,9 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
 			curr = vq->packed.desc_extra[curr].next;
 			printk(KERN_INFO "(add_packed) %s -> idx: %u", (vq)->vq.name, i);
 			printk(KERN_INFO "(add_packed) %s -> id: %u", (vq)->vq.name, desc[i].id);
-			printk(KERN_INFO "(add_packed) %s -> id: %u", (vq)->vq.name, curr);
+			printk(KERN_INFO "(add_packed) %s -> len: %u", (vq)->vq.name, desc[i].len);
+			printk(KERN_INFO "(add_packed) %s -> addr: %llu", (vq)->vq.name, desc[i].addr);
+			printk(KERN_INFO "(add_packed) %s -> next id: %u", (vq)->vq.name, curr);
 
 			if ((unlikely(++i >= vq->packed.vring.num))) {
 				i = 0;
