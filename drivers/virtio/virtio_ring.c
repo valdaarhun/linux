@@ -521,10 +521,10 @@ static inline unsigned int virtqueue_add_desc_split(struct virtqueue *vq,
 
 	next = extra[i].next;
 	printk(KERN_INFO "(add_split) %s -> idx: %u", vq->name, i);
-	printk(KERN_INFO "(add_split) %s -> id: %u", vq->name, desc[i].id);
+	printk(KERN_INFO "(add_split) %s -> flags: %u", vq->name, desc[i].flags);
 	printk(KERN_INFO "(add_split) %s -> len: %u", vq->name, desc[i].len);
 	printk(KERN_INFO "(add_split) %s -> addr: %llu", vq->name, desc[i].addr);
-	printk(KERN_INFO "(add_split) %s -> next id: %u", vq->name, next);
+	printk(KERN_INFO "(add_split) %s -> next idx: %u", vq->name, next);
 	desc[i].next = cpu_to_virtio16(vq->vdev, next);
 
 	return next;
