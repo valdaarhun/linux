@@ -1557,6 +1557,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
 			printk(KERN_INFO "(add_packed) %s -> id: %u", (vq)->vq.name, desc[i].id);
 			printk(KERN_INFO "(add_packed) %s -> len: %u", (vq)->vq.name, desc[i].len);
 			printk(KERN_INFO "(add_packed) %s -> addr: %llu", (vq)->vq.name, desc[i].addr);
+			printk(KERN_INFO "(add_packed) %s -> flags: %u", (vq)->vq.name, flags);
 			printk(KERN_INFO "(add_packed) %s -> next id: %u", (vq)->vq.name, curr);
 
 			if ((unlikely(++i >= vq->packed.vring.num))) {
