@@ -1491,6 +1491,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
 
 	BUG_ON(total_sg == 0);
 
+	printk(KERN_INFO "(use_indirect?) %s -> verdict: %u", (vq)->vq.name, virtqueue_use_indirect(vq, total_sg));
 	if (virtqueue_use_indirect(vq, total_sg)) {
 		err = virtqueue_add_indirect_packed(vq, sgs, total_sg, out_sgs,
 						    in_sgs, data, premapped, gfp);
