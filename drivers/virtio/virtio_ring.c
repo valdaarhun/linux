@@ -1783,8 +1783,11 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
 	id = le16_to_cpu(vq->packed.vring.desc[last_used].id);
 	*len = le32_to_cpu(vq->packed.vring.desc[last_used].len);
 
-	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o')
+	if ((vq)->vq.name[0] == 'i' || (vq)->vq.name[0] == 'o') {
 		printk(KERN_INFO "%s -> id: %u, idx: %u", (vq)->vq.name, id, last_used);
+		printk(KERN_INFO "%s -> len: %u, idx: %u", (vq)->vq.name, *len, last_used);
+		printk(KERN_INFO "%s -> flags: %u, idx: %u", (vq)->vq.name, vq->packed.vring.desc[last_used].flags, last_used);
+	}
 
 	if (unlikely(id >= vq->packed.vring.num)) {
 		BAD_RING(vq, "id %u out of range\n", id);
